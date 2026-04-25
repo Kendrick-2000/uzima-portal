@@ -1,0 +1,106 @@
+/* ─── MAIN GRID ─── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .side { display: none !important; }
+  .mob { display: flex !important; }
+}
+
+/* ─── LEFT PANEL (BRANDING) ─── */
+.side {
+  position: relative;
+  background: linear-gradient(160deg, #061a0f, #0a2618 40%, #071510);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.side-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 400px;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--accent), #00b36b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 0 36px rgba(0,230,138,0.22);
+  font-size: 1.7rem;
+  color: var(--bg);
+}
+
+/* Feature Cards */
+.feats { display: flex; flex-direction: column; gap: 0.75rem; text-align: left; }
+.feat {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 9px;
+  background: rgba(0,230,138,0.04);
+  border: 1px solid rgba(0,230,138,0.07);
+  transition: var(--transition-base);
+}
+.feat:hover { background: var(--dim); transform: translateX(3px); }
+.feat .fi {
+  width: 32px; height: 32px; border-radius: 7px;
+  background: var(--dim); display: flex; align-items: center; justify-content: center;
+  color: var(--accent); font-size: 0.78rem; flex-shrink: 0;
+}
+.feat strong { display: block; font-size: 0.82rem; color: var(--t2); }
+.feat small { font-size: 0.7rem; color: var(--t4); }
+
+/* ─── RIGHT PANEL (FUNCTIONAL) ─── */
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--bg);
+  position: relative;
+  overflow-y: auto;
+}
+
+/* Subtle glow spots */
+.main::before {
+  content: '';
+  position: absolute;
+  top: -180px; right: -180px;
+  width: 450px; height: 450px;
+  background: radial-gradient(circle, var(--dim) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.wrap { width: 100%; max-width: 410px; position: relative; z-index: 1; }
+
+/* Mobile Header */
+.mob {
+  display: none;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+.mob-logo {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), #00b36b);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 1.1rem; color: var(--bg);
+}

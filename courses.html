@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uzima University — Courses & Grades</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/dashboard.css">
+  <link rel="stylesheet" href="css/components/courses.css">
+</head>
+<body>
+  <header class="dash-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      <div class="nav-logo">U</div>
+      <h1 class="nav-title">Courses & Grades</h1>
+    </div>
+    <div class="nav-right">
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-avatar" id="navAvatar">U</div>
+        <span class="nav-name" id="navName">User</span>
+        <i class="fas fa-chevron-down nav-chevron"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <button class="dropdown-item" onclick="location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</button>
+        <button class="dropdown-item" onclick="location.href='courses.html'"><i class="fas fa-book"></i> Courses</button>
+        <hr class="dropdown-divider">
+        <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="dash-sidebar" id="dashSidebar">
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
+      <a href="courses.html" class="nav-link active"><i class="fas fa-book"></i> Courses</a>
+      <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
+      <small style="color:var(--t4)">v2.4.1 • Demo Mode</small>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <!-- Filter & Controls -->
+    <section class="courses-controls">
+      <div class="filter-group">
+        <label class="filter-label"><i class="fas fa-calendar"></i> Term</label>
+        <select id="termFilter" class="filter-select">
+          <option value="all">All Terms</option>
+          <option value="fall2024" selected>Fall 2024</option>
+          <option value="spring2025">Spring 2025</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label"><i class="fas fa-sort"></i> Sort By</label>
+        <select id="sortFilter" class="filter-select">
+          <option value="grade">Grade (High → Low)</option>
+          <option value="name">Name (A → Z)</option>
+        </select>
+      </div>
+      <div class="search-group">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="courseSearch" class="search-input" placeholder="Search courses or instructors...">
+      </div>
+      <button class="btn btn-secondary" id="transcriptBtn"><i class="fas fa-file-pdf"></i> Generate Transcript</button>
+    </section>
+
+    <!-- Course Cards Grid -->
+    <section class="courses-grid" id="coursesGrid">
+      <!-- Injected by JS -->
+    </section>
+
+    <!-- Assignments Tracker -->
+    <section class="dash-card full-width mt-2">
+      <div class="card-header">
+        <h3><i class="fas fa-tasks"></i> Assignment Tracker</h3>
+        <button class="card-action" id="markAllDone"><i class="fas fa-check-double"></i> Mark All Done</button>
+      </div>
+      <div class="table-wrapper">
+        <table class="grades-table" id="assignmentsTable">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Assignment</th>
+              <th>Due Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="assignmentsBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/courses.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+.grp { margin-bottom: 0.9rem; position: relative; }
+.grp label {
+  display: block;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--t3);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.field { position: relative; display: flex; align-items: center; }
+.field > .ico {
+  position: absolute;
+  left: 12px;
+  color: var(--t4);
+  font-size: 0.82rem;
+  pointer-events: none;
+  transition: color var(--transition-base);
+  z-index: 2;
+}
+
+.field:focus-within > .ico { color: var(--accent); }
+
+/* Inputs & Selects */
+input, select {
+  width: 100%;
+  padding: 0.68rem 0.8rem 0.68rem 2.5rem;
+  background: var(--input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--t1);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  transition: var(--transition-base);
+  outline: none;
+}
+input::placeholder { color: var(--t4); }
+
+/* Focus States */
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--dim);
+}
+
+/* Select Styling */
+select { appearance: none; cursor: pointer; }
+select option { background: var(--card); color: var(--t1); }
+.sel-arr {
+  position: absolute; right: 12px;
+  color: var(--t4); pointer-events: none;
+  font-size: 0.68rem;
+}
+
+/* Validation States */
+input.bad, select.bad {
+  border-color: var(--err);
+  box-shadow: 0 0 0 3px var(--err-bg);
+}
+input.good, select.good {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,230,138,0.12);
+}
+
+/* Error Messages */
+.err {
+  font-size: 0.71rem;
+  color: var(--err);
+  margin-top: 0.2rem;
+  display: none;
+  align-items: center;
+  gap: 0.2rem;
+}
+.err.show { display: flex; }

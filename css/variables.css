@@ -1,0 +1,39 @@
+:root {
+  /* ─── CORE PALETTE ─── */
+  --bg: #050c08;
+  --card: #0e1f16;
+  --input: #0a1810;
+  --border: #1a3325;
+  
+  /* ─── ACCENT SYSTEM ─── */
+  --accent: #00e68a;
+  --accent-hover: #00ff99;
+  --dim: rgba(0, 230, 138, 0.08);
+  
+  /* ─── TEXT LUMINANCE RAMP ─── */
+  --t1: #e8f5e9;  /* Headings, primary */
+  --t2: #b8dcc8;  /* Body text */
+  --t3: #6da882;  /* Secondary, helper */
+  --t4: #3a6349;  /* Placeholders, disabled */
+  
+  /* ─── SYSTEM STATES ─── */
+  --err: #ff4757;
+  --err-bg: rgba(255, 71, 87, 0.1);
+  --warn: #ffb142;
+  --warn-bg: rgba(255, 177, 66, 0.1);
+  --info: #4a7fb5; /* Decorative blue */
+  --info-bg: rgba(74, 127, 181, 0.1);
+  
+  /* ─── SPACING & RADIUS ─── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* ─── TRANSITIONS ─── */
+  --transition-base: 0.25s ease;
+}

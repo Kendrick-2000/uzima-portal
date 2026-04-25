@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uzima University — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/dashboard.css">
+  <link rel="stylesheet" href="css/components/admin.css">
+</head>
+<body>
+  <header class="dash-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      <div class="nav-logo">U</div>
+      <h1 class="nav-title">Admin Panel</h1>
+    </div>
+    <div class="nav-right">
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-avatar" id="navAvatar">A</div>
+        <span class="nav-name" id="navName">Administrator</span>
+        <i class="fas fa-chevron-down nav-chevron"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <button class="dropdown-item" onclick="location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</button>
+        <button class="dropdown-item" onclick="location.href='courses.html'"><i class="fas fa-book"></i> Courses</button>
+        <button class="dropdown-item" onclick="location.href='admin.html'"><i class="fas fa-shield-halved"></i> Admin</button>
+        <hr class="dropdown-divider">
+        <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="dash-sidebar" id="dashSidebar">
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
+      <a href="admin.html" class="nav-link active"><i class="fas fa-shield-halved"></i> Admin</a>
+      <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
+      <small style="color:var(--t4)">v2.4.1 • Demo Mode</small>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <!-- System Stats -->
+    <section class="stats-grid admin-stats">
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><span class="stat-value" id="totalUsers">0</span><span class="stat-label">Total Users</span></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-info"><span class="stat-value" id="activeUsers">0</span><span class="stat-label">Active Today</span></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-ban"></i></div><div class="stat-info"><span class="stat-value" id="lockedUsers">0</span><span class="stat-label">Locked Accounts</span></div></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-info"><span class="stat-value" id="storageUsed">0 MB</span><span class="stat-label">Local Storage</span></div></div>
+    </section>
+
+    <!-- Controls -->
+    <section class="admin-controls">
+      <div class="search-group">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="adminSearch" class="search-input" placeholder="Search by name, email, or ID...">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label"><i class="fas fa-filter"></i> Role</label>
+        <select id="roleFilter" class="filter-select">
+          <option value="all">All Roles</option>
+          <option value="student">Student</option>
+          <option value="lecturer">Lecturer</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary" id="exportCSV"><i class="fas fa-file-csv"></i> Export CSV</button>
+    </section>
+
+    <!-- Users Table -->
+    <section class="dash-card full-width">
+      <div class="card-header">
+        <h3><i class="fas fa-user-gear"></i> User Management</h3>
+        <span class="secondary-text" id="userCount">0 users</span>
+      </div>
+      <div class="table-wrapper">
+        <table class="grades-table" id="usersTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>ID / Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Lockout Management -->
+    <section class="dash-card full-width mt-2">
+      <div class="card-header">
+        <h3><i class="fas fa-lock"></i> Account Lockouts</h3>
+        <button class="card-action" id="clearAllLocks"><i class="fas fa-unlock"></i> Clear All</button>
+      </div>
+      <div class="card-body" id="lockoutList">
+        <p class="empty-state">No locked accounts detected.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Edit User Modal -->
+  <div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div class="panel" style="max-width:420px">
+      <div class="panel-head">
+        <h3 id="editTitle">Edit User</h3>
+        <button class="panel-x" id="closeEdit"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="grp">
+        <label>Role</label>
+        <select id="editRole" class="filter-select" style="width:100%">
+          <option value="student">Student</option>
+          <option value="lecturer">Lecturer</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <div class="grp">
+        <label>Status</label>
+        <select id="editStatus" class="filter-select" style="width:100%">
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="saveUser"><span class="txt">Save Changes</span></button>
+    </div>
+  </div>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

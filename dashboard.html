@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uzima University — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/dashboard.css">
+</head>
+<body>
+  <header class="dash-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      <div class="nav-logo" aria-label="Uzima University">U</div>
+      <h1 class="nav-title">Dashboard</h1>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon" id="notifBell" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge" id="notifBadge">2</span>
+      </button>
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-avatar" id="navAvatar">U</div>
+        <span class="nav-name" id="navName">User</span>
+        <i class="fas fa-chevron-down nav-chevron"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <button class="dropdown-item"><i class="fas fa-user"></i> My Profile</button>
+        <button class="dropdown-item"><i class="fas fa-cog"></i> Settings</button>
+        <hr class="dropdown-divider">
+        <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="dash-sidebar" id="dashSidebar">
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
+      <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
+      <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
+      <small style="color:var(--t4)">v2.4.1 • Demo Mode</small>
+    </div>
+  </aside>
+
+  <main class="dash-main">
+    <section class="welcome-banner">
+      <div class="welcome-text">
+        <h2 id="welcomeMsg">Good morning, Student</h2>
+        <p>Here's what's happening with your academic portal today.</p>
+      </div>
+      <div class="welcome-date" id="welcomeDate">Loading...</div>
+    </section>
+
+    <section class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="stat-info"><span class="stat-value" id="statCredits">0</span><span class="stat-label">Credits Earned</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> +4</span></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-info"><span class="stat-value" id="statGPA">0.0</span><span class="stat-label">Current GPA</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> +0.2</span></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-info"><span class="stat-value" id="statPending">0</span><span class="stat-label">Pending Tasks</span></div><span class="stat-trend down"><i class="fas fa-arrow-down"></i> -2</span></div>
+      <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-info"><span class="stat-value" id="statAttendance">0%</span><span class="stat-label">Attendance</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> On track</span></div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="actions-grid" id="actionsGrid"></section>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid-v2">
+      <!-- Timetable -->
+      <section class="dash-card">
+        <div class="card-header">
+          <h3><i class="fas fa-calendar-day"></i> Weekly Timetable</h3>
+          <button class="card-action" id="printSchedule"><i class="fas fa-print"></i> Print</button>
+        </div>
+        <div class="timetable-tabs" id="ttTabs">
+          <button class="tt-tab active" data-day="mon">Mon</button>
+          <button class="tt-tab" data-day="tue">Tue</button>
+          <button class="tt-tab" data-day="wed">Wed</button>
+          <button class="tt-tab" data-day="thu">Thu</button>
+          <button class="tt-tab" data-day="fri">Fri</button>
+        </div>
+        <div class="card-body" id="ttBody"></div>
+      </section>
+
+      <!-- Notifications -->
+      <section class="dash-card">
+        <div class="card-header">
+          <h3><i class="fas fa-bell"></i> Notifications</h3>
+          <button class="card-action" id="markAllRead">Mark all read</button>
+        </div>
+        <div class="card-body notif-wrapper" id="notifList"></div>
+      </section>
+
+      <!-- Grade Chart -->
+      <section class="dash-card full-width">
+        <div class="card-header">
+          <h3><i class="fas fa-chart-line"></i> Semester Performance</h3>
+          <button class="card-action">Full Report</button>
+        </div>
+        <div class="card-body" id="gradeChart"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

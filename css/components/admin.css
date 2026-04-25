@@ -1,0 +1,76 @@
+/* ─── ADMIN CONTROLS ─── */
+.admin-controls {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+  margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+}
+.admin-controls .search-group { flex: 1; min-width: 220px; }
+.admin-controls .filter-group { min-width: 140px; }
+.admin-controls .filter-select, .admin-controls .search-input {
+  padding: 0.6rem 0.8rem; background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 8px; color: var(--t1); font-size: 0.85rem; width: 100%;
+}
+.admin-controls .search-input:focus, .admin-controls .filter-select:focus {
+  border-color: var(--accent); box-shadow: 0 0 0 3px var(--dim); outline: none;
+}
+.mt-2 { margin-top: 1.5rem; }
+
+/* ─── USER TABLE ACTIONS ─── */
+.user-cell { display: flex; align-items: center; gap: 0.75rem; }
+.user-avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: var(--dim); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; color: var(--accent); flex-shrink: 0; }
+.user-info h4 { font-size: 0.88rem; color: var(--t1); margin: 0 0 0.1rem; }
+.user-info p { font-size: 0.72rem; color: var(--t4); margin: 0; }
+.role-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; text-transform: capitalize; }
+.role-badge.student { background: rgba(74,127,181,0.1); color: var(--info); }
+.role-badge.lecturer { background: rgba(0,230,138,0.1); color: var(--accent); }
+.role-badge.admin { background: rgba(255,177,66,0.1); color: var(--warn); }
+.status-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+.status-badge.active { background: rgba(0,230,138,0.1); color: var(--accent); }
+.status-badge.suspended { background: var(--err-bg); color: var(--err); }
+.action-btns { display: flex; gap: 0.5rem; }
+.action-btn { background: var(--dim); border: none; color: var(--accent); padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.3rem; }
+.action-btn:hover { background: rgba(0,230,138,0.2); }
+.action-btn.danger { color: var(--err); background: var(--err-bg); }
+.action-btn.danger:hover { background: rgba(255,71,87,0.2); }
+
+/* ─── LOCKOUT LIST ─── */
+.lock-item { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem; border-radius: 8px; background: var(--input); border: 1px solid var(--border); margin-bottom: 0.5rem; }
+.lock-info { display: flex; align-items: center; gap: 0.75rem; }
+.lock-info i { color: var(--warn); font-size: 1rem; }
+.lock-meta h4 { font-size: 0.88rem; color: var(--t1); margin: 0 0 0.1rem; }
+.lock-meta p { font-size: 0.72rem; color: var(--t4); margin: 0; }
+.lock-count { font-size: 0.8rem; font-weight: 700; color: var(--warn); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  body { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+  .dash-sidebar { position: fixed; left: -260px; top: 64px; bottom: 0; width: 240px; z-index: 40; transition: left 0.3s ease; }
+  .dash-sidebar.open { left: 0; }
+  .nav-toggle { display: block; }
+  .admin-controls { flex-direction: column; align-items: stretch; }
+  .grades-table { display: block; overflow-x: auto; }
+  .dash-main { height: auto; }
+}
+
+/* ─── MODAL OVERLAY FIX ─── */
+#editModal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1000 !important;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(5,12,8,0.85);
+  backdrop-filter: blur(7px);
+}
+#editModal.open {
+  display: flex !important;
+}
+#editModal .panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 90%;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
