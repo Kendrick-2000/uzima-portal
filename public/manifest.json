@@ -1,0 +1,27 @@
+{
+  "name": "Uzima University Portal",
+  "short_name": "Uzima",
+  "description": "Academic portal for students and staff",
+  "start_url": "/uzima-portal/",
+  "display": "standalone",
+  "background_color": "#050c08",
+  "theme_color": "#00e68a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/uzima-portal/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/uzima-portal/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
