@@ -1,23 +1,24 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
-  base: './',
+  base: '/uzima-portal/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: false,
     minify: 'esbuild',
     rollupOptions: {
-      // Tell Vite: "Don't bundle these — they're loaded via CDN"
       external: ['pocketbase'],
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        dashboard: resolve(__dirname, 'dashboard.html'),
+        courses: resolve(__dirname, 'courses.html'),
+        admin: resolve(__dirname, 'admin.html')
+      },
       output: {
-        // Map the external import to the global variable PocketBase provides
         globals: {
           pocketbase: 'PocketBase'
-        },
-        manualChunks: {
-          // Only chunk your own code, not external libs
-          app: ['js/main.js', 'js/dashboard.js', 'js/courses.js', 'js/admin.js']
         }
       }
     }
