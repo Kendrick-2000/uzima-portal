@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uzima University — Parent Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/dashboard.css">
+  <link rel="stylesheet" href="css/pages/parent.css">
+</head>
+<body>
+  <header class="dash-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      <div class="nav-logo" aria-label="Uzima University">U</div>
+      <h1 class="nav-title">Parent Portal</h1>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon" id="notifBell" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge" id="notifBadge">0</span>
+      </button>
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-avatar" id="navAvatar">P</div>
+        <span class="nav-name" id="navName">Parent</span>
+        <i class="fas fa-chevron-down nav-chevron"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="dash-sidebar" id="dashSidebar">
+    <nav class="sidebar-nav">
+      <a href="parent.html" class="nav-link active"><i class="fas fa-user-graduate"></i> My Child</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
+      <small style="color:var(--t4)">v2.4.1 • Parent View</small>
+    </div>
+  </aside>
+
+  <main class="dash-main parent-main">
+    <section class="page-header">
+      <h1>Child's Academic Overview</h1>
+      <p>Read-only access to grades, fees, and schedule.</p>
+    </section>
+
+    <!-- Child Profile Card -->
+    <section class="dash-card">
+      <div class="card-header">
+        <h3><i class="fas fa-id-card"></i> Student Profile</h3>
+      </div>
+      <div class="card-body">
+        <div class="profile-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Full Name</label>
+            <p id="childName" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Student ID</label>
+            <p id="childSid" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Program</label>
+            <p id="childRole" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Status</label>
+            <p style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--accent);">Active</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="parent-tabs">
+      <button class="tab-btn active" data-tab="grades"><i class="fas fa-chart-bar"></i> Grades</button>
+      <button class="tab-btn" data-tab="fees"><i class="fas fa-file-invoice"></i> Fees</button>
+      <button class="tab-btn" data-tab="schedule"><i class="fas fa-calendar-alt"></i> Schedule</button>
+    </div>
+
+    <!-- Grades Tab -->
+    <section class="tab-content active" id="gradesTab">
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-label">Cumulative GPA</span><span class="stat-value" id="childGPA">0.00</span></div>
+        <div class="stat-card"><span class="stat-label">Credits Earned</span><span class="stat-value" id="childCredits">0</span></div>
+      </div>
+      <div class="dash-card">
+        <div class="card-header"><h3>Semester Breakdown</h3></div>
+        <div class="card-body" id="childGradesBody"></div>
+      </div>
+    </section>
+
+    <!-- Fees Tab -->
+    <section class="tab-content" id="feesTab">
+      <div class="stat-row">
+        <div class="stat-card danger-border"><span class="stat-label">Balance Due</span><span class="stat-value" id="childFeesDue">KES 0</span></div>
+        <div class="stat-card success-border"><span class="stat-label">Total Paid</span><span class="stat-value" id="childFeesPaid">KES 0</span></div>
+      </div>
+      <div class="dash-card">
+        <div class="card-header"><h3>Payment History</h3></div>
+        <div class="card-body">
+          <table class="admin-table" id="childFeesTable">
+            <thead><tr><th>Date</th><th>Reference</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="childFeesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule Tab -->
+    <section class="tab-content" id="scheduleTab">
+      <div class="dash-card">
+        <div class="card-header"><h3>Weekly Timetable</h3></div>
+        <div class="card-body" id="childScheduleBody"></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/parent.js"></script>
+</body>
+</html>

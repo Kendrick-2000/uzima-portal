@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uzima University — Courses</title>
+  <title>Uzima University — Schedule</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components/dashboard.css">
-  <link rel="stylesheet" href="css/pages/courses.css">
+  <link rel="stylesheet" href="css/pages/schedule.css">
 </head>
 <body>
   <header class="dash-nav">
     <div class="nav-left">
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
       <div class="nav-logo" aria-label="Uzima University">U</div>
-      <h1 class="nav-title">Courses</h1>
+      <h1 class="nav-title">Class Schedule</h1>
     </div>
     <div class="nav-right">
       <button class="nav-icon" id="notifBell" aria-label="Notifications">
@@ -31,6 +31,9 @@
       <div class="profile-dropdown" id="profileDropdown">
         <a href="dashboard.html" class="dropdown-item"><i class="fas fa-home"></i> Dashboard</a>
         <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+        <a href="courses.html" class="dropdown-item"><i class="fas fa-book"></i> Courses</a>
+        <a href="grades.html" class="dropdown-item"><i class="fas fa-chart-bar"></i> Grades</a>
+        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
         <hr class="dropdown-divider">
         <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
       </div>
@@ -41,11 +44,11 @@
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
-      <a href="courses.html" class="nav-link active"><i class="fas fa-book"></i> Courses</a>
+      <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
       <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
-      <a href="schedule.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="#" class="nav-link active"><i class="fas fa-calendar-alt"></i> Schedule</a>
       <a href="fees.html" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
-      <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
+      <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
@@ -53,34 +56,46 @@
     </div>
   </aside>
 
-  <main class="dash-main courses-main">
+  <main class="dash-main schedule-main">
     <section class="page-header">
-      <h1>My Courses</h1>
-      <p>View your enrolled courses, schedules, and academic progress.</p>
+      <h1>Weekly Timetable</h1>
+      <p>View your class schedule, locations, and instructor details.</p>
     </section>
 
-    <section class="filters-bar">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="courseSearch" placeholder="Search by name, code, or lecturer...">
+    <div class="schedule-controls">
+      <div class="week-nav">
+        <button id="prevWeek"><i class="fas fa-chevron-left"></i></button>
+        <span id="currentWeekLabel">Current Week</span>
+        <button id="nextWeek"><i class="fas fa-chevron-right"></i></button>
+        <button id="todayBtn" class="btn-secondary">Today</button>
       </div>
-      <select id="filterSemester">
-        <option value="all">All Semesters</option>
-        <option value="1">Semester 1</option>
-        <option value="2">Semester 2</option>
-      </select>
-      <select id="filterStatus">
-        <option value="all">All Status</option>
-        <option value="enrolled">Enrolled</option>
-        <option value="completed">Completed</option>
-      </select>
-    </section>
+      <button id="printSchedule" class="btn-secondary"><i class="fas fa-print"></i> Print</button>
+    </div>
 
-    <section class="courses-grid" id="coursesGrid">
-      <!-- Cards injected by JS -->
-    </section>
+    <div class="schedule-container" id="scheduleContainer">
+      <div class="time-labels" id="timeLabels"></div>
+      <div class="schedule-grid" id="scheduleGrid"></div>
+    </div>
+
+    <div class="schedule-legend" id="scheduleLegend"></div>
   </main>
 
-  <script type="module" src="js/courses.js"></script>
+  <!-- Course Detail Modal -->
+  <div class="modal-overlay" id="courseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalCourseTitle">Course Details</h3>
+        <button class="modal-close" onclick="closeModal('courseModal')">&times;</button>
+      </div>
+      <div class="modal-body" id="modalContent">
+        <!-- Populated by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('courseModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/schedule.js"></script>
 </body>
 </html>

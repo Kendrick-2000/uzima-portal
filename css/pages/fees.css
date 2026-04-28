@@ -1,0 +1,74 @@
+/* Fees Page Styles */
+.fees-main { max-width: 1000px; }
+.page-header { margin-bottom: 24px; }
+.page-header h1 { margin: 0 0 8px; color: var(--t1); font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; }
+.page-header p { margin: 0; color: var(--t2); }
+
+.balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.balance-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+  display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+.balance-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--border);
+}
+.balance-card.danger-border::before { background: var(--err); }
+.balance-card.success-border::before { background: var(--accent); }
+.balance-card.warning-border::before { background: #f59e0b; }
+.balance-label { font-size: 0.85rem; color: var(--t2); margin-bottom: 8px; }
+.balance-value { font-size: 1.6rem; font-weight: 700; color: var(--t1); font-family: 'Space Grotesk', sans-serif; }
+
+.fees-actions { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary {
+  padding: 12px 24px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { background: #16a34a; transform: translateY(-1px); }
+.btn-secondary { background: var(--card); color: var(--t1); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+.table-wrapper { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.admin-table th, .admin-table td { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.admin-table th { background: rgba(0,0,0,0.2); color: var(--t4); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+.admin-table td { color: var(--t1); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover td { background: var(--hover); }
+
+.status-badge {
+  display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+}
+.status-paid { background: rgba(34,197,94,0.15); color: var(--accent); }
+.status-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.status-failed { background: rgba(239,68,68,0.15); color: var(--err); }
+
+/* Modal Reuse */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.modal-header h3 { margin: 0; color: var(--t1); font-size: 1.1rem; }
+.modal-close { background: none; border: none; color: var(--t4); font-size: 1.5rem; cursor: pointer; }
+.modal-body { padding: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.form-group label { color: var(--t2); font-size: 0.85rem; font-weight: 500; }
+.form-group input, .form-group select {
+  background: var(--bg); border: 1px solid var(--border); color: var(--t1);
+  padding: 10px; border-radius: 8px; outline: none; font-size: 0.95rem; transition: border 0.2s;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+.modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 20px; border-top: 1px solid var(--border); }
+
+@media print {
+  .dash-nav, .dash-sidebar, .fees-actions, .modal-overlay { display: none !important; }
+  .dash-main { margin: 0; padding: 20px; }
+  .balance-card, .dash-card { break-inside: avoid; border: 1px solid #000; }
+  body { background: #fff; color: #000; }
+  .admin-table th { background: #eee; color: #000; }
+}
+@media (max-width: 768px) {
+  .balance-grid { grid-template-columns: repeat(2, 1fr); }
+  .fees-actions { flex-direction: column; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}

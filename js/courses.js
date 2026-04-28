@@ -1,170 +1,126 @@
-import { clean, esc } from './utils/string.js';
+// js/courses.js - Courses Page Logic
+import { pb, connected } from './core/pocketbase.js';
 import { toast } from './ui/toasts.js';
+import { initNotifications } from './notifications.js';
 
-// ─── SESSION CHECK ───
+const mockCourses = [
+  { id: '1', code: 'CS101', name: 'Introduction to Data Structures', credits: 4, lecturer: 'Dr. A. Mwangi', semester: '1', status: 'enrolled', schedule: 'Mon & Wed 8:00 AM', grade: null },
+  { id: '2', code: 'MATH201', name: 'Calculus II', credits: 3, lecturer: 'Prof. J. Ochieng', semester: '1', status: 'enrolled', schedule: 'Tue & Thu 10:00 AM', grade: null },
+  { id: '3', code: 'ENG102', name: 'Technical Writing', credits: 2, lecturer: 'Ms. L. Wanjiku', semester: '1', status: 'enrolled', schedule: 'Fri 2:00 PM', grade: null },
+  { id: '4', code: 'PHY101', name: 'Physics for Engineers', credits: 4, lecturer: 'Dr. K. Njoroge', semester: '2', status: 'completed', schedule: 'Mon & Wed 11:00 AM', grade: 'B+' },
+  { id: '5', code: 'CS205', name: 'Database Systems', credits: 3, lecturer: 'Mr. P. Kamau', semester: '2', status: 'completed', schedule: 'Tue & Thu 2:00 PM', grade: 'A' },
+];
+
+// 🔒 HIDE ADMIN LINK FOR NON-ADMINS
+const sessionRaw = localStorage.getItem('uzima_session');
+if (sessionRaw) {
+    try {
+        const auth = JSON.parse(sessionRaw);
+        // If role is NOT admin, hide the Admin sidebar link
+        if (auth.model?.role !== 'admin') {
+            const adminLink = document.querySelector('a[href="admin.html"]');
+            if (adminLink) adminLink.style.display = 'none';
+        }
+    } catch (e) {}
+}
+
 function checkSession() {
   const raw = localStorage.getItem('uzima_session');
   if (!raw) { window.location.href = 'index.html'; return null; }
-  try {
-    const auth = JSON.parse(raw);
-    if (Date.now() > auth.expires) {
-      localStorage.removeItem('uzima_session');
-      window.location.href = 'index.html';
-      return null;
-    }
-    return auth.model;
-  } catch {
-    localStorage.removeItem('uzima_session');
-    window.location.href = 'index.html';
-    return null;
-  }
+  const auth = JSON.parse(raw);
+  if (Date.now() > auth.expires) { localStorage.removeItem('uzima_session'); window.location.href = 'index.html'; return null; }
+  return auth.model;
 }
 
-// ─── MOCK DATA ───
-const coursesData = [
-  { code: 'CS401', name: 'Advanced Web Systems', instructor: 'Dr. A. Mwangi', term: 'fall2024', grade: 92, status: 'active' },
-  { code: 'CS302', name: 'Database Systems', instructor: 'Prof. J. Ochieng', term: 'fall2024', grade: 78, status: 'active' },
-  { code: 'CYB201', name: 'Cybersecurity Fundamentals', instructor: 'Dr. S. Kamau', term: 'fall2024', grade: 85, status: 'active' },
-  { code: 'MAT300', name: 'Mathematics III', instructor: 'Prof. R. Ngugi', term: 'fall2024', grade: 41, status: 'completed' },
-  { code: 'CS405', name: 'Cloud Computing', instructor: 'Dr. P. Wanjiku', term: 'spring2025', grade: 88, status: 'active' }
-];
-
-const assignmentsData = [
-  { course: 'CS401', title: 'Final Project Deployment', due: '2026-05-15', status: 'pending' },
-  { course: 'CS302', title: 'SQL Optimization Lab', due: '2026-05-10', status: 'submitted' },
-  { course: 'CYB201', title: 'Vulnerability Assessment Report', due: '2026-05-12', status: 'pending' },
-  { course: 'MAT300', title: 'Final Exam', due: '2026-04-20', status: 'overdue' },
-  { course: 'CS405', title: 'Cloud Architecture Diagram', due: '2026-05-18', status: 'pending' }
-];
-
-// ─── INIT ───
-document.addEventListener('DOMContentLoaded', () => {
-  const user = checkSession();
-  if (!user) return;
-
-  const name = user?.name || 'Student';
-  document.getElementById('navName').textContent = clean(name);
-  document.getElementById('navAvatar').textContent = clean(name).charAt(0).toUpperCase();
-
-  renderCourses();
-  renderAssignments();
-  bindControls();
-
-  // UI Bindings
-  document.getElementById('navProfile').addEventListener('click', (e) => {
-    e.stopPropagation();
-    const dd = document.getElementById('profileDropdown');
-    const ch = document.querySelector('.nav-chevron');
-    dd.classList.toggle('open');
-    ch.style.transform = dd.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
-  });
-  document.addEventListener('click', () => {
-    document.getElementById('profileDropdown').classList.remove('open');
-    document.querySelector('.nav-chevron').style.transform = 'rotate(0)';
-  });
-  document.getElementById('navToggle').addEventListener('click', () => {
-    document.getElementById('dashSidebar').classList.toggle('open');
-  });
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('uzima_session');
-    toast.show('Signed out successfully', 's');
-    setTimeout(() => window.location.href = 'index.html', 800);
-  });
-});
-
-// ─── RENDER COURSES ───
-function renderCourses(filterTerm = 'all', sortBy = 'grade', search = '') {
+function renderCourses(courses) {
   const grid = document.getElementById('coursesGrid');
-  let filtered = coursesData.filter(c => {
-    const matchTerm = filterTerm === 'all' || c.term === filterTerm;
-    const matchSearch = search === '' || 
-      c.name.toLowerCase().includes(search.toLowerCase()) || 
-      c.instructor.toLowerCase().includes(search.toLowerCase());
-    return matchTerm && matchSearch;
-  });
-
-  if (sortBy === 'grade') filtered.sort((a, b) => b.grade - a.grade);
-  else filtered.sort((a, b) => a.name.localeCompare(b.name));
-
-  const circumference = 2 * Math.PI * 22; // r=22
-  grid.innerHTML = filtered.map(c => {
-    const offset = circumference - (c.grade / 100) * circumference;
-    return `
-      <div class="course-card">
-        <div class="course-header">
-          <div>
-            <div class="course-code">${esc(c.code)}</div>
-            <div class="course-title">${esc(c.name)}</div>
-            <div class="course-instructor"><i class="fas fa-chalkboard-teacher"></i> ${esc(c.instructor)}</div>
-          </div>
-          <div class="progress-ring-wrap">
-            <svg width="56" height="56">
-              <circle class="progress-ring-bg" cx="28" cy="28" r="22"></circle>
-              <circle class="progress-ring-fill" cx="28" cy="28" r="22" 
-                stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" data-target="${offset}"></circle>
-            </svg>
-            <div class="progress-ring-text">${c.grade}%</div>
-          </div>
-        </div>
-        <div class="course-meta">
-          <span>Term: ${c.term.replace(/([A-Z])/g, ' $1').trim()}</span>
-          <span class="course-status ${c.status}">${c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span>
-        </div>
+  if (!grid) return;
+  if (courses.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><i class="fas fa-book-open" style="font-size:2rem;margin-bottom:12px;display:block;"></i><p>No courses found matching your filters.</p></div>';
+    return;
+  }
+  grid.innerHTML = courses.map(c => `
+    <div class="course-card">
+      <div class="course-header">
+        <span class="course-code">${c.code}</span>
+        <span class="course-status status-${c.status}">${c.status}</span>
       </div>
-    `;
-  }).join('');
-
-  // Animate rings
-  setTimeout(() => {
-    grid.querySelectorAll('.progress-ring-fill').forEach(ring => {
-      ring.style.strokeDashoffset = ring.dataset.target;
-    });
-  }, 50);
-}
-
-// ─── RENDER ASSIGNMENTS ───
-function renderAssignments() {
-  const tbody = document.getElementById('assignmentsBody');
-  tbody.innerHTML = assignmentsData.map(a => `
-    <tr>
-      <td><strong>${esc(a.course)}</strong></td>
-      <td>${esc(a.title)}</td>
-      <td>${new Date(a.due).toLocaleDateString()}</td>
-      <td><span class="assign-badge ${a.status}">${a.status.charAt(0).toUpperCase() + a.status.slice(1)}</span></td>
-      <td>
-        <button class="assign-btn" ${a.status !== 'pending' ? 'disabled' : ''} onclick="window.submitAssignment('${a.course}', '${esc(a.title)}')">
-          ${a.status === 'submitted' ? 'Submitted' : a.status === 'overdue' ? 'Closed' : 'Submit'}
-        </button>
-      </td>
-    </tr>
+      <h3 class="course-title">${c.name}</h3>
+      <div class="course-meta">
+        <span><i class="fas fa-chalkboard-teacher"></i> ${c.lecturer}</span>
+        <span><i class="fas fa-clock"></i> ${c.schedule}</span>
+        ${c.grade ? `<span><i class="fas fa-star"></i> Grade: <strong style="color:var(--accent)">${c.grade}</strong></span>` : ''}
+      </div>
+      <div class="course-footer">
+        <span class="course-credits"><strong>${c.credits}</strong> Credits</span>
+        <button class="btn-view" onclick="alert('Course details module coming soon!')">View Details</button>
+      </div>
+    </div>
   `).join('');
 }
 
-window.submitAssignment = (course, title) => {
-  toast.show(`Submitted: ${title}`, 's');
-  const idx = assignmentsData.findIndex(a => a.course === course && a.title === title);
-  if (idx !== -1) assignmentsData[idx].status = 'submitted';
-  renderAssignments();
-};
+function initCourses() {
+  const user = checkSession();
+  if (!user) return;
 
-// ─── CONTROLS ───
-function bindControls() {
-  const termEl = document.getElementById('termFilter');
-  const sortEl = document.getElementById('sortFilter');
-  const searchEl = document.getElementById('courseSearch');
+  const navName = document.getElementById('navName');
+  const navAvatar = document.getElementById('navAvatar');
+  if (navName) navName.textContent = (user.name?.name || user.name || 'User').split(' ')[0];
+  if (navAvatar) navAvatar.textContent = (user.name?.name || user.name || 'U').charAt(0).toUpperCase();
+
+  const navProfile = document.getElementById('navProfile');
+  const dropdown = document.getElementById('profileDropdown');
+  if (navProfile && dropdown) {
+    navProfile.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('show'); });
+    document.addEventListener('click', () => dropdown.classList.remove('show'));
+  }
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.onclick = () => {
+      if (connected && pb) pb.authStore.clear();
+      localStorage.removeItem('uzima_session');
+      window.location.href = 'index.html';
+    };
+  }
+
+  renderCourses(mockCourses);
+
+  const searchInput = document.getElementById('courseSearch');
+  const semFilter = document.getElementById('filterSemester');
+  const statusFilter = document.getElementById('filterStatus');
+
+  function applyFilters() {
+    const query = searchInput.value.toLowerCase();
+    const sem = semFilter.value;
+    const stat = statusFilter.value;
+    const filtered = mockCourses.filter(c => {
+      const matchQuery = c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query) || c.lecturer.toLowerCase().includes(query);
+      const matchSem = sem === 'all' || c.semester === sem;
+      const matchStat = stat === 'all' || c.status === stat;
+      return matchQuery && matchSem && matchStat;
+    });
+    renderCourses(filtered);
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  semFilter.addEventListener('change', applyFilters);
+  statusFilter.addEventListener('change', applyFilters);
   
-  const refresh = () => renderCourses(termEl.value, sortEl.value, searchEl.value);
-  termEl.addEventListener('change', refresh);
-  sortEl.addEventListener('change', refresh);
-  searchEl.addEventListener('input', refresh);
+  // Initialize Notifications
+  initNotifications();
+}
 
-  document.getElementById('markAllDone').addEventListener('click', () => {
-    assignmentsData.forEach(a => { if(a.status === 'pending') a.status = 'submitted'; });
-    renderAssignments();
-    toast.show('All pending assignments marked as submitted', 's');
-  });
-
-  document.getElementById('transcriptBtn').addEventListener('click', () => {
-    window.print();
-  });
+document.addEventListener('DOMContentLoaded', initCourses);
+// ROLE GUARD - Redirect parents to parent.html
+const raw = localStorage.getItem('uzima_session');
+if (raw) {
+  try {
+    const auth = JSON.parse(raw);
+    const role = auth.model?.role?.toLowerCase() || 'student';
+    if (role === 'parent') {
+      window.location.href = 'parent.html';
+    }
+  } catch (e) {
+    // Ignore parse errors
+  }
 }

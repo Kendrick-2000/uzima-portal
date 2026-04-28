@@ -1,0 +1,58 @@
+/* Settings Page Styles */
+.settings-main { max-width: 900px; }
+.page-header { margin-bottom: 24px; }
+.page-header h1 { margin: 0 0 8px; color: var(--t1); font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; }
+.page-header p { margin: 0; color: var(--t2); }
+
+.settings-grid { display: flex; flex-direction: column; gap: 20px; }
+.settings-list { display: flex; flex-direction: column; gap: 16px; }
+
+.setting-item {
+  display: flex; justify-content: space-between; align-items: center; padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-item:last-child { border-bottom: none; }
+.setting-info { display: flex; flex-direction: column; gap: 4px; }
+.setting-info strong { color: var(--t1); font-weight: 600; }
+.setting-desc { color: var(--t2); font-size: 0.85rem; }
+
+.setting-select {
+  background: var(--bg); border: 1px solid var(--border); color: var(--t1);
+  padding: 8px 12px; border-radius: 6px; outline: none; cursor: pointer; min-width: 140px;
+}
+
+/* Toggle Switch */
+.toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border); transition: .3s; border-radius: 24px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+  background-color: var(--t4); transition: .3s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+
+/* Danger Card */
+.danger-border { border-left: 4px solid #ef4444; }
+.btn-danger {
+  background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid #ef4444;
+  padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s;
+}
+.btn-danger:hover { background: #ef4444; color: #fff; }
+
+/* Light Theme Overrides */
+body.light-theme {
+  --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0;
+  --t1: #0f172a; --t2: #475569; --t4: #94a3b8;
+  --hover: rgba(34,197,94,0.08);
+}
+body.light-theme .nav-logo { color: #fff; }
+body.light-theme .stat-card, body.light-theme .dash-card, body.light-theme .setting-select { background: var(--card); }
+
+@media (max-width: 768px) {
+  .setting-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .setting-select, .toggle { align-self: flex-start; }
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uzima University — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components/dashboard.css">
+  <link rel="stylesheet" href="css/pages/settings.css">
+</head>
+<body>
+  <header class="dash-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
+      <div class="nav-logo" aria-label="Uzima University">U</div>
+      <h1 class="nav-title">Settings</h1>
+    </div>
+    <div class="nav-right">
+      <button class="nav-icon" id="notifBell" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge" id="notifBadge">2</span>
+      </button>
+      <div class="nav-profile" id="navProfile">
+        <div class="nav-avatar" id="navAvatar">U</div>
+        <span class="nav-name" id="navName">User</span>
+        <i class="fas fa-chevron-down nav-chevron"></i>
+      </div>
+      <div class="profile-dropdown" id="profileDropdown">
+        <a href="dashboard.html" class="dropdown-item"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+        <a href="courses.html" class="dropdown-item"><i class="fas fa-book"></i> Courses</a>
+        <a href="grades.html" class="dropdown-item"><i class="fas fa-chart-bar"></i> Grades</a>
+        <hr class="dropdown-divider">
+        <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <aside class="dash-sidebar" id="dashSidebar">
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
+      <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
+      <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="schedule.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="fees.html" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="#" class="nav-link active"><i class="fas fa-cog"></i> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
+      <small style="color:var(--t4)">v2.4.1 • Live Mode</small>
+    </div>
+  </aside>
+
+  <main class="dash-main settings-main">
+    <section class="page-header">
+      <h1>Account Settings</h1>
+      <p>Manage your preferences, security, and data.</p>
+    </section>
+
+    <div class="settings-grid">
+      <!-- Appearance -->
+      <section class="dash-card">
+        <div class="card-header"><h3><i class="fas fa-palette"></i> Appearance</h3></div>
+        <div class="card-body settings-list">
+          <div class="setting-item">
+            <div class="setting-info"><strong>Theme</strong><span class="setting-desc">Switch between dark and light mode</span></div>
+            <label class="toggle"><input type="checkbox" id="themeToggle"><span class="slider"></span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section class="dash-card">
+        <div class="card-header"><h3><i class="fas fa-bell"></i> Notifications</h3></div>
+        <div class="card-body settings-list">
+          <div class="setting-item">
+            <div class="setting-info"><strong>Email Alerts</strong><span class="setting-desc">Receive grade and schedule updates</span></div>
+            <label class="toggle"><input type="checkbox" id="emailNotif" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info"><strong>Push Notifications</strong><span class="setting-desc">Browser alerts for deadlines</span></div>
+            <label class="toggle"><input type="checkbox" id="pushNotif"><span class="slider"></span></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Security -->
+      <section class="dash-card">
+        <div class="card-header"><h3><i class="fas fa-shield-alt"></i> Security</h3></div>
+        <div class="card-body settings-list">
+          <div class="setting-item">
+            <div class="setting-info"><strong>Session Timeout</strong><span class="setting-desc">Auto-logout after inactivity</span></div>
+            <select id="sessionTimeout" class="setting-select">
+              <option value="30">30 minutes</option>
+              <option value="60">1 hour</option>
+              <option value="120">2 hours</option>
+              <option value="0">Never</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info"><strong>Two-Factor Authentication</strong><span class="setting-desc">Extra security layer (Coming Soon)</span></div>
+            <button class="btn-secondary" id="2faBtn" disabled>Enable 2FA</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Language & Region -->
+      <section class="dash-card">
+        <div class="card-header"><h3><i class="fas fa-globe"></i> Language & Region</h3></div>
+        <div class="card-body settings-list">
+          <div class="setting-item">
+            <div class="setting-info"><strong>Language</strong><span class="setting-desc">Interface language</span></div>
+            <select id="language" class="setting-select">
+              <option value="en">English</option>
+              <option value="sw">Swahili</option>
+              <option value="fr">French</option>
+            </select>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info"><strong>Timezone</strong><span class="setting-desc">Affects schedule display</span></div>
+            <select id="timezone" class="setting-select">
+              <option value="EAT">Nairobi (EAT)</option>
+              <option value="UTC">UTC</option>
+              <option value="EST">Eastern (EST)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data & Privacy -->
+      <section class="dash-card danger-border">
+        <div class="card-header"><h3><i class="fas fa-database"></i> Data & Privacy</h3></div>
+        <div class="card-body settings-list">
+          <div class="setting-item">
+            <div class="setting-info"><strong>Export My Data</strong><span class="setting-desc">Download a copy of your profile & grades</span></div>
+            <button class="btn-secondary" id="exportBtn">Download JSON</button>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info"><strong>Delete Account</strong><span class="setting-desc">Permanently remove your data</span></div>
+            <button class="btn-danger" id="deleteBtn">Delete Account</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/settings.js"></script>
+</body>
+</html>

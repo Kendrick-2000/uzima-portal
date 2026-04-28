@@ -22,14 +22,22 @@
         <i class="fas fa-bell"></i>
         <span class="notif-badge" id="notifBadge">2</span>
       </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-header">
+          <h4>Notifications</h4>
+          <button class="notif-clear" id="markAllRead">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
       <div class="nav-profile" id="navProfile">
         <div class="nav-avatar" id="navAvatar">U</div>
         <span class="nav-name" id="navName">User</span>
         <i class="fas fa-chevron-down nav-chevron"></i>
       </div>
       <div class="profile-dropdown" id="profileDropdown">
-        <button class="dropdown-item"><i class="fas fa-user"></i> My Profile</button>
-        <button class="dropdown-item"><i class="fas fa-cog"></i> Settings</button>
+        <!-- FIXED: Now links to profile.html -->
+        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
         <hr class="dropdown-divider">
         <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
       </div>
@@ -38,34 +46,91 @@
 
   <aside class="dash-sidebar" id="dashSidebar">
     <nav class="sidebar-nav">
-      <a href="#" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="dashboard.html" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
       <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
-      <a href="#" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
-      <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
-      <a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
-      <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="schedule.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="fees.html" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
-      <small style="color:var(--t4)">v2.4.1 • Demo Mode</small>
+      <small style="color:var(--t4)">v2.4.1 • Live Mode</small>
     </div>
   </aside>
 
   <main class="dash-main">
+    <!-- Welcome Banner -->
     <section class="welcome-banner">
       <div class="welcome-text">
-        <h2 id="welcomeMsg">Good morning, Student</h2>
+        <h2 id="welcomeMsg">Welcome back, Student</h2>
         <p>Here's what's happening with your academic portal today.</p>
       </div>
       <div class="welcome-date" id="welcomeDate">Loading...</div>
     </section>
 
+    <!-- Student Profile Card (Live Data) -->
+    <section class="dash-card profile-card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h3><i class="fas fa-id-card"></i> Student Profile</h3>
+      </div>
+      <div class="card-body">
+        <div class="profile-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Student ID</label>
+            <p id="profileSid" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Role</label>
+            <p id="profileRole" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Email</label>
+            <p id="profileEmail" style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--t1);">Loading...</p>
+          </div>
+          <div class="profile-item">
+            <label class="muted" style="display: block; font-size: 0.85em; color: var(--t4); margin-bottom: 5px;">Account Status</label>
+            <p style="font-size: 1.3em; font-weight: 600; margin: 0; color: var(--accent);">Active</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Grid -->
     <section class="stats-grid" id="statsGrid">
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="stat-info"><span class="stat-value" id="statCredits">0</span><span class="stat-label">Credits Earned</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> +4</span></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-star"></i></div><div class="stat-info"><span class="stat-value" id="statGPA">0.0</span><span class="stat-label">Current GPA</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> +0.2</span></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-tasks"></i></div><div class="stat-info"><span class="stat-value" id="statPending">0</span><span class="stat-label">Pending Tasks</span></div><span class="stat-trend down"><i class="fas fa-arrow-down"></i> -2</span></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-check"></i></div><div class="stat-info"><span class="stat-value" id="statAttendance">0%</span><span class="stat-label">Attendance</span></div><span class="stat-trend up"><i class="fas fa-arrow-up"></i> On track</span></div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statCredits">42</span>
+          <span class="stat-label">Credits Earned</span>
+        </div>
+        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +4</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statGPA">3.85</span>
+          <span class="stat-label">Current GPA</span>
+        </div>
+        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +0.2</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statPending">3</span>
+          <span class="stat-label">Pending Tasks</span>
+        </div>
+        <span class="stat-trend down"><i class="fas fa-arrow-down"></i> -2</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+        <div class="stat-info">
+          <span class="stat-value" id="statAttendance">94%</span>
+          <span class="stat-label">Attendance</span>
+        </div>
+        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> On track</span>
+      </div>
     </section>
 
     <!-- Quick Actions -->

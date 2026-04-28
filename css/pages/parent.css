@@ -1,0 +1,43 @@
+/* Parent Portal Styles (Read-Only) */
+.parent-main { max-width: 1000px; }
+.page-header { margin-bottom: 24px; }
+.page-header h1 { margin: 0 0 8px; color: var(--t1); font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; }
+.page-header p { margin: 0; color: var(--t2); }
+
+.parent-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.tab-btn {
+  background: none; border: none; padding: 10px 20px; color: var(--t2); font-size: 0.95rem; cursor: pointer;
+  border-radius: 8px 8px 0 0; transition: all 0.2s; font-weight: 500; display: flex; align-items: center; gap: 8px;
+}
+.tab-btn:hover { background: var(--hover); color: var(--t1); }
+.tab-btn.active { background: var(--accent-soft); color: var(--accent); border-bottom: 2px solid var(--accent); }
+.tab-content { display: none; animation: fadeIn 0.2s; }
+.tab-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+.stat-card .stat-label { font-size: 0.85rem; color: var(--t2); margin-bottom: 8px; }
+.stat-card .stat-value { font-size: 1.6rem; font-weight: 700; color: var(--t1); font-family: 'Space Grotesk', sans-serif; }
+.stat-card.danger-border { border-left: 4px solid var(--err); }
+.stat-card.success-border { border-left: 4px solid var(--accent); }
+
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th, .admin-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.admin-table th { background: rgba(0,0,0,0.2); color: var(--t4); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+.admin-table td { color: var(--t1); }
+.status-badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-paid { background: rgba(34,197,94,0.15); color: var(--accent); }
+.status-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+.schedule-grid-mini { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.day-col h4 { margin: 0 0 8px; color: var(--t1); font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.class-block { background: var(--hover); border-left: 3px solid var(--accent); padding: 8px; border-radius: 6px; margin-bottom: 8px; font-size: 0.85rem; }
+.class-block .time { color: var(--accent); font-weight: 600; }
+.class-block .name { color: var(--t1); display: block; margin: 2px 0; }
+.class-block .room { color: var(--t4); font-size: 0.8rem; }
+
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .schedule-grid-mini { grid-template-columns: 1fr; }
+}

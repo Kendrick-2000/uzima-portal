@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uzima University — Courses</title>
+  <title>Uzima University — Grades</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components/dashboard.css">
-  <link rel="stylesheet" href="css/pages/courses.css">
+  <link rel="stylesheet" href="css/pages/grades.css">
 </head>
 <body>
   <header class="dash-nav">
     <div class="nav-left">
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
       <div class="nav-logo" aria-label="Uzima University">U</div>
-      <h1 class="nav-title">Courses</h1>
+      <h1 class="nav-title">Academic Record</h1>
     </div>
     <div class="nav-right">
       <button class="nav-icon" id="notifBell" aria-label="Notifications">
@@ -31,6 +31,7 @@
       <div class="profile-dropdown" id="profileDropdown">
         <a href="dashboard.html" class="dropdown-item"><i class="fas fa-home"></i> Dashboard</a>
         <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+        <a href="courses.html" class="dropdown-item"><i class="fas fa-book"></i> Courses</a>
         <hr class="dropdown-divider">
         <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
       </div>
@@ -41,8 +42,8 @@
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
       <a href="admin.html" class="nav-link"><i class="fas fa-shield-halved"></i> Admin</a>
-      <a href="courses.html" class="nav-link active"><i class="fas fa-book"></i> Courses</a>
-      <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
+      <a href="grades.html" class="nav-link active"><i class="fas fa-chart-bar"></i> Grades</a>
       <a href="schedule.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
       <a href="fees.html" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
       <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
@@ -53,34 +54,59 @@
     </div>
   </aside>
 
-  <main class="dash-main courses-main">
+  <main class="dash-main grades-main">
     <section class="page-header">
-      <h1>My Courses</h1>
-      <p>View your enrolled courses, schedules, and academic progress.</p>
+      <h1>Academic Performance</h1>
+      <p>Track your GPA, credit progress, and semester-by-semester grades.</p>
     </section>
 
-    <section class="filters-bar">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="courseSearch" placeholder="Search by name, code, or lecturer...">
+    <!-- Summary Stats -->
+    <section class="grade-stats-grid" id="gradeStats">
+      <div class="stat-card accent-border">
+        <span class="stat-label">Cumulative GPA</span>
+        <span class="stat-value" id="cumGPA">0.00</span>
+        <span class="stat-sub">out of 4.00</span>
       </div>
-      <select id="filterSemester">
-        <option value="all">All Semesters</option>
-        <option value="1">Semester 1</option>
-        <option value="2">Semester 2</option>
-      </select>
-      <select id="filterStatus">
-        <option value="all">All Status</option>
-        <option value="enrolled">Enrolled</option>
-        <option value="completed">Completed</option>
-      </select>
+      <div class="stat-card">
+        <span class="stat-label">Credits Earned</span>
+        <span class="stat-value" id="totalCredits">0</span>
+        <span class="stat-sub">of 120 required</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Credits Remaining</span>
+        <span class="stat-value" id="remCredits">120</span>
+        <span class="stat-sub">to graduate</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Academic Standing</span>
+        <span class="stat-value" id="standing">--</span>
+        <span class="stat-sub">Good Standing</span>
+      </div>
     </section>
 
-    <section class="courses-grid" id="coursesGrid">
-      <!-- Cards injected by JS -->
+    <!-- GPA Trend -->
+    <section class="dash-card trend-card">
+      <div class="card-header">
+        <h3><i class="fas fa-chart-line"></i> GPA Trend</h3>
+      </div>
+      <div class="card-body" id="gpaTrend"></div>
     </section>
+
+    <!-- Semester Breakdown -->
+    <section class="dash-card">
+      <div class="card-header">
+        <h3><i class="fas fa-book-open"></i> Semester Breakdown</h3>
+      </div>
+      <div class="card-body" id="semesterBreakdown"></div>
+    </section>
+
+    <div class="transcript-actions">
+      <button class="btn-primary" id="downloadTranscript">
+        <i class="fas fa-file-pdf"></i> Download Official Transcript
+      </button>
+    </div>
   </main>
 
-  <script type="module" src="js/courses.js"></script>
+  <script type="module" src="js/grades.js"></script>
 </body>
 </html>

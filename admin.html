@@ -3,31 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uzima University — Admin Panel</title>
+  <title>Uzima University — Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components/dashboard.css">
-  <link rel="stylesheet" href="css/components/admin.css">
+  <link rel="stylesheet" href="css/pages/admin.css">
 </head>
 <body>
   <header class="dash-nav">
     <div class="nav-left">
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><i class="fas fa-bars"></i></button>
-      <div class="nav-logo">U</div>
+      <div class="nav-logo" aria-label="Uzima University">U</div>
       <h1 class="nav-title">Admin Panel</h1>
     </div>
     <div class="nav-right">
       <div class="nav-profile" id="navProfile">
         <div class="nav-avatar" id="navAvatar">A</div>
-        <span class="nav-name" id="navName">Administrator</span>
+        <span class="nav-name" id="navName">Admin</span>
         <i class="fas fa-chevron-down nav-chevron"></i>
       </div>
       <div class="profile-dropdown" id="profileDropdown">
-        <button class="dropdown-item" onclick="location.href='dashboard.html'"><i class="fas fa-th-large"></i> Dashboard</button>
-        <button class="dropdown-item" onclick="location.href='courses.html'"><i class="fas fa-book"></i> Courses</button>
-        <button class="dropdown-item" onclick="location.href='admin.html'"><i class="fas fa-shield-halved"></i> Admin</button>
+        <a href="dashboard.html" class="dropdown-item"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="profile.html" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+        <a href="courses.html" class="dropdown-item"><i class="fas fa-book"></i> Courses</a>
+        <a href="grades.html" class="dropdown-item"><i class="fas fa-chart-bar"></i> Grades</a>
+        <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a>
         <hr class="dropdown-divider">
         <button class="dropdown-item danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sign Out</button>
       </div>
@@ -37,102 +39,108 @@
   <aside class="dash-sidebar" id="dashSidebar">
     <nav class="sidebar-nav">
       <a href="dashboard.html" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+      <a href="#" class="nav-link active"><i class="fas fa-shield-halved"></i> Admin</a>
       <a href="courses.html" class="nav-link"><i class="fas fa-book"></i> Courses</a>
-      <a href="admin.html" class="nav-link active"><i class="fas fa-shield-halved"></i> Admin</a>
-      <a href="#" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
-      <a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
-      <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+      <a href="grades.html" class="nav-link"><i class="fas fa-chart-bar"></i> Grades</a>
+      <a href="schedule.html" class="nav-link"><i class="fas fa-calendar-alt"></i> Schedule</a>
+      <a href="fees.html" class="nav-link"><i class="fas fa-file-invoice"></i> Fees</a>
+      <a href="settings.html" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-status"><span class="dot live"></span><span>System Online</span></div>
-      <small style="color:var(--t4)">v2.4.1 • Demo Mode</small>
+      <small style="color:var(--t4)">v2.4.1 • Admin Mode</small>
     </div>
   </aside>
 
-  <main class="dash-main">
-    <!-- System Stats -->
-    <section class="stats-grid admin-stats">
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><span class="stat-value" id="totalUsers">0</span><span class="stat-label">Total Users</span></div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-info"><span class="stat-value" id="activeUsers">0</span><span class="stat-label">Active Today</span></div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-ban"></i></div><div class="stat-info"><span class="stat-value" id="lockedUsers">0</span><span class="stat-label">Locked Accounts</span></div></div>
-      <div class="stat-card"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-info"><span class="stat-value" id="storageUsed">0 MB</span><span class="stat-label">Local Storage</span></div></div>
+  <main class="dash-main admin-main">
+    <section class="page-header">
+      <h1>System Administration</h1>
+      <p>Manage users, courses, and monitor platform activity.</p>
     </section>
 
-    <!-- Controls -->
-    <section class="admin-controls">
-      <div class="search-group">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="adminSearch" class="search-input" placeholder="Search by name, email, or ID...">
-      </div>
-      <div class="filter-group">
-        <label class="filter-label"><i class="fas fa-filter"></i> Role</label>
-        <select id="roleFilter" class="filter-select">
+    <!-- Quick Stats -->
+    <section class="admin-stats-grid">
+      <div class="stat-card"><span class="stat-label">Total Users</span><span class="stat-value" id="statUsers">0</span></div>
+      <div class="stat-card"><span class="stat-label">Active Courses</span><span class="stat-value" id="statCourses">0</span></div>
+      <div class="stat-card"><span class="stat-label">Enrollments</span><span class="stat-value" id="statEnroll">0</span></div>
+      <div class="stat-card"><span class="stat-label">System Status</span><span class="stat-value" style="color:var(--accent)">Online</span></div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="users">👥 Users</button>
+      <button class="tab-btn" data-tab="courses">📚 Courses</button>
+    </div>
+
+    <!-- Users Tab -->
+    <section class="tab-content active" id="usersTab">
+      <div class="tab-toolbar">
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="userSearch" placeholder="Search by name, email, or ID..."></div>
+        <select id="userRoleFilter">
           <option value="all">All Roles</option>
-          <option value="student">Student</option>
-          <option value="lecturer">Lecturer</option>
-          <option value="admin">Administrator</option>
+          <option value="student">Students</option>
+          <option value="lecturer">Lecturers</option>
+          <option value="admin">Admins</option>
         </select>
-      </div>
-      <button class="btn btn-secondary" id="exportCSV"><i class="fas fa-file-csv"></i> Export CSV</button>
-    </section>
-
-    <!-- Users Table -->
-    <section class="dash-card full-width">
-      <div class="card-header">
-        <h3><i class="fas fa-user-gear"></i> User Management</h3>
-        <span class="secondary-text" id="userCount">0 users</span>
+        <button class="btn-primary" id="addUserBtn"><i class="fas fa-plus"></i> Add User</button>
       </div>
       <div class="table-wrapper">
-        <table class="grades-table" id="usersTable">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>ID / Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+        <table class="admin-table" id="usersTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>SID</th><th>Created</th><th>Actions</th></tr></thead>
           <tbody id="usersBody"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- Lockout Management -->
-    <section class="dash-card full-width mt-2">
-      <div class="card-header">
-        <h3><i class="fas fa-lock"></i> Account Lockouts</h3>
-        <button class="card-action" id="clearAllLocks"><i class="fas fa-unlock"></i> Clear All</button>
+    <!-- Courses Tab -->
+    <section class="tab-content" id="coursesTab">
+      <div class="tab-toolbar">
+        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="courseSearch" placeholder="Search by code or name..."></div>
+        <button class="btn-primary" id="addCourseBtn"><i class="fas fa-plus"></i> Add Course</button>
       </div>
-      <div class="card-body" id="lockoutList">
-        <p class="empty-state">No locked accounts detected.</p>
+      <div class="table-wrapper">
+        <table class="admin-table" id="coursesTable">
+          <thead><tr><th>Code</th><th>Name</th><th>Credits</th><th>Lecturer</th><th>Enrolled</th><th>Actions</th></tr></thead>
+          <tbody id="coursesBody"></tbody>
+        </table>
       </div>
     </section>
   </main>
 
-  <!-- Edit User Modal -->
-  <div class="overlay" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
-    <div class="panel" style="max-width:420px">
-      <div class="panel-head">
-        <h3 id="editTitle">Edit User</h3>
-        <button class="panel-x" id="closeEdit"><i class="fas fa-times"></i></button>
+  <!-- User Modal -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal">
+      <div class="modal-header"><h3 id="userModalTitle">Add User</h3><button class="modal-close" onclick="closeModal('userModal')">&times;</button></div>
+      <div class="modal-body">
+        <form id="userForm">
+          <div class="form-grid">
+            <div class="form-group"><label>Full Name</label><input type="text" id="uName" required></div>
+            <div class="form-group"><label>Email</label><input type="email" id="uEmail" required></div>
+            <div class="form-group"><label>Password</label><input type="password" id="uPass" placeholder="Leave blank to keep"></div>
+            <div class="form-group"><label>Role</label><select id="uRole"><option value="student">Student</option><option value="lecturer">Lecturer</option><option value="admin">Admin</option></select></div>
+            <div class="form-group"><label>Student/Staff ID</label><input type="text" id="uSid" placeholder="UMB/2025/000"></div>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn-secondary" onclick="closeModal('userModal')">Cancel</button><button type="submit" class="btn-primary">Save User</button></div>
+        </form>
       </div>
-      <div class="grp">
-        <label>Role</label>
-        <select id="editRole" class="filter-select" style="width:100%">
-          <option value="student">Student</option>
-          <option value="lecturer">Lecturer</option>
-          <option value="admin">Administrator</option>
-        </select>
+    </div>
+  </div>
+
+  <!-- Course Modal -->
+  <div class="modal-overlay" id="courseModal">
+    <div class="modal">
+      <div class="modal-header"><h3 id="courseModalTitle">Add Course</h3><button class="modal-close" onclick="closeModal('courseModal')">&times;</button></div>
+      <div class="modal-body">
+        <form id="courseForm">
+          <div class="form-grid">
+            <div class="form-group"><label>Course Code</label><input type="text" id="cCode" required></div>
+            <div class="form-group"><label>Course Name</label><input type="text" id="cName" required></div>
+            <div class="form-group"><label>Credits</label><input type="number" id="cCredits" min="1" max="6" required></div>
+            <div class="form-group"><label>Lecturer</label><input type="text" id="cLecturer" required></div>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn-secondary" onclick="closeModal('courseModal')">Cancel</button><button type="submit" class="btn-primary">Save Course</button></div>
+        </form>
       </div>
-      <div class="grp">
-        <label>Status</label>
-        <select id="editStatus" class="filter-select" style="width:100%">
-          <option value="active">Active</option>
-          <option value="suspended">Suspended</option>
-        </select>
-      </div>
-      <button class="btn btn-primary" id="saveUser"><span class="txt">Save Changes</span></button>
     </div>
   </div>
 

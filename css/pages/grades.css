@@ -1,0 +1,56 @@
+/* Grades Page Styles */
+.grades-main { max-width: 1000px; }
+
+.page-header { margin-bottom: 24px; }
+.page-header h1 { margin: 0 0 8px; color: var(--t1); font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; }
+.page-header p { margin: 0; color: var(--t2); }
+
+.grade-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+.stat-card.accent-border { border-left: 4px solid var(--accent); }
+.stat-card .stat-label { font-size: 0.85rem; color: var(--t2); margin-bottom: 8px; }
+.stat-card .stat-value { font-size: 2rem; font-weight: 700; color: var(--t1); font-family: 'Space Grotesk', sans-serif; }
+.stat-card .stat-sub { font-size: 0.8rem; color: var(--t4); margin-top: 4px; }
+
+.trend-card .card-body { padding: 20px; }
+.gpa-bar-container { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding-top: 20px; }
+.gpa-bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.gpa-bar { width: 100%; background: var(--accent-soft); border-radius: 6px 6px 0 0; position: relative; transition: height 0.5s ease; min-height: 4px; }
+.gpa-bar-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--accent); border-radius: 6px 6px 0 0; }
+.gpa-label { font-size: 0.75rem; color: var(--t4); text-align: center; }
+.gpa-value { font-size: 0.85rem; font-weight: 600; color: var(--t1); }
+
+.semester-group { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.semester-header {
+  background: var(--card); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; user-select: none; transition: background 0.2s;
+}
+.semester-header:hover { background: var(--hover); }
+.semester-title { font-weight: 600; color: var(--t1); display: flex; align-items: center; gap: 10px; }
+.semester-gpa { background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+.semester-body { display: none; padding: 12px 16px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); }
+.semester-group.open .semester-body { display: block; }
+.semester-group.open .semester-header i { transform: rotate(180deg); }
+
+.grade-table { width: 100%; border-collapse: collapse; }
+.grade-table th, .grade-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.grade-table th { color: var(--t4); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+.grade-table td { color: var(--t1); }
+.grade-badge {
+  display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;
+  background: var(--accent-soft); color: var(--accent);
+}
+.grade-badge.low { background: rgba(239,68,68,0.15); color: #ef4444; }
+.grade-badge.mid { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+.transcript-actions { margin-top: 24px; display: flex; justify-content: center; }
+.btn-primary {
+  background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 8px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { background: #16a34a; transform: translateY(-1px); }
+
+@media (max-width: 768px) {
+  .grade-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .gpa-bar-container { height: 120px; }
+}

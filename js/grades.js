@@ -1,0 +1,161 @@
+// js/grades.js - Grades & Transcript Logic
+import { pb, connected } from './core/pocketbase.js';
+import { toast } from './ui/toasts.js';
+import { initNotifications } from './notifications.js';
+
+// 🔒 HIDE ADMIN LINK FOR NON-ADMINS
+const sessionRaw = localStorage.getItem('uzima_session');
+if (sessionRaw) {
+    try {
+        const auth = JSON.parse(sessionRaw);
+        // If role is NOT admin, hide the Admin sidebar link
+        if (auth.model?.role !== 'admin') {
+            const adminLink = document.querySelector('a[href="admin.html"]');
+            if (adminLink) adminLink.style.display = 'none';
+        }
+    } catch (e) {}
+}
+
+const academicRecord = [
+  { semester: "Semester 1 (2024)", courses: [
+    { code: "CS101", name: "Intro to Data Structures", credits: 4, grade: "A" },
+    { code: "MATH201", name: "Calculus II", credits: 3, grade: "B+" },
+    { code: "ENG102", name: "Technical Writing", credits: 2, grade: "A-" },
+    { code: "PHY101", name: "Physics for Engineers", credits: 4, grade: "B" }
+  ]},
+  { semester: "Semester 2 (2025)", courses: [
+    { code: "CS205", name: "Database Systems", credits: 3, grade: "A" },
+    { code: "CS210", name: "Algorithms", credits: 3, grade: "B+" },
+    { code: "STAT200", name: "Probability & Stats", credits: 3, grade: "B" },
+    { code: "HUM101", name: "Ethics in Tech", credits: 2, grade: "A" }
+  ]}
+];
+
+const gradePoints = { "A": 4.0, "A-": 3.7, "B+": 3.3, "B": 3.0, "B-": 2.7, "C+": 2.3, "C": 2.0, "C-": 1.7, "D+": 1.3, "D": 1.0, "F": 0.0 };
+
+function calculateGPA(courses) {
+  let totalPoints = 0, totalCredits = 0;
+  courses.forEach(c => {
+    const pts = gradePoints[c.grade] || 0;
+    totalPoints += pts * c.credits;
+    totalCredits += c.credits;
+  });
+  return totalCredits === 0 ? 0 : (totalPoints / totalCredits).toFixed(2);
+}
+
+function renderGrades() {
+  let allCourses = [], allSemesterGPAs = [];
+  academicRecord.forEach(sem => {
+    const semGPA = calculateGPA(sem.courses);
+    allSemesterGPAs.push({ label: sem.semester.split(" ")[0], gpa: semGPA });
+    allCourses = allCourses.concat(sem.courses);
+  });
+
+  const cumGPA = calculateGPA(allCourses);
+  const earnedCredits = allCourses.reduce((sum, c) => sum + c.credits, 0);
+  const remaining = Math.max(0, 120 - earnedCredits);
+  const standing = cumGPA >= 3.5 ? "Dean's List" : cumGPA >= 2.0 ? "Good Standing" : "Academic Warning";
+
+  document.getElementById('cumGPA').textContent = cumGPA;
+  document.getElementById('totalCredits').textContent = earnedCredits;
+  document.getElementById('remCredits').textContent = remaining;
+  document.getElementById('standing').textContent = standing;
+
+  const trendContainer = document.getElementById('gpaTrend');
+  const maxGPA = 4.0;
+  trendContainer.innerHTML = `<div class="gpa-bar-container">${allSemesterGPAs.map(s => `
+    <div class="gpa-bar-wrapper">
+      <div class="gpa-value">${s.gpa}</div>
+      <div class="gpa-bar"><div class="gpa-bar-fill" style="height: ${(s.gpa / maxGPA) * 100}%"></div></div>
+      <div class="gpa-label">${s.label}</div>
+    </div>
+  `).join('')}</div>`;
+
+  const breakdown = document.getElementById('semesterBreakdown');
+  breakdown.innerHTML = academicRecord.map((sem, i) => {
+    const semGPA = calculateGPA(sem.courses);
+    return `
+      <div class="semester-group ${i === 0 ? 'open' : ''}">
+        <div class="semester-header" onclick="this.parentElement.classList.toggle('open')">
+          <div class="semester-title"><i class="fas fa-chevron-down"></i> ${sem.semester}</div>
+          <div class="semester-gpa">GPA: ${semGPA}</div>
+        </div>
+        <div class="semester-body">
+          <table class="grade-table">
+            <thead><tr><th>Code</th><th>Course</th><th>Credits</th><th>Grade</th></tr></thead>
+            <tbody>${sem.courses.map(c => `
+              <tr>
+                <td><strong>${c.code}</strong></td>
+                <td>${c.name}</td>
+                <td>${c.credits}</td>
+                <td><span class="grade-badge ${gradePoints[c.grade] < 2.0 ? 'low' : gradePoints[c.grade] < 3.0 ? 'mid' : ''}">${c.grade}</span></td>
+              </tr>
+            `).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function downloadTranscript() {
+  let text = `UZIMA UNIVERSITY - OFFICIAL TRANSCRIPT\nStudent: ${document.getElementById('navName').textContent}\nDate: ${new Date().toLocaleDateString()}\n\n`;
+  text += `Cumulative GPA: ${document.getElementById('cumGPA').textContent} | Credits: ${document.getElementById('totalCredits').textContent}/120\n\n`;
+  academicRecord.forEach(sem => {
+    text += `${sem.semester.toUpperCase()}\n`;
+    sem.courses.forEach(c => text += `${c.code} - ${c.name} | Credits: ${c.credits} | Grade: ${c.grade}\n`);
+    text += `Semester GPA: ${calculateGPA(sem.courses)}\n\n`;
+  });
+  text += `Standing: ${document.getElementById('standing').textContent}\nGenerated by Uzima Portal`;
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'Uzima_Transcript.txt'; a.click();
+  URL.revokeObjectURL(url);
+  toast.show('Transcript downloaded', 's');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 🔒 ROLE GUARD: Block parents from student/admin pages
+  const sessionRaw = localStorage.getItem('uzima_session');
+  if (sessionRaw) {
+    try {
+      const auth = JSON.parse(sessionRaw);
+      const role = auth.model?.role?.toLowerCase().trim() || 'student';
+      if (role === 'parent') {
+        console.log('🚫 Parent access blocked. Redirecting to parent.html');
+        window.location.href = 'parent.html';
+        return; // ⚠️ Stops the rest of the page from loading
+      }
+    } catch (e) { /* ignore parse errors */ }
+  }
+
+  const raw = localStorage.getItem('uzima_session');
+  if (!raw) { window.location.href = 'index.html'; return; }
+  const auth = JSON.parse(raw);
+  if (Date.now() > auth.expires) { localStorage.removeItem('uzima_session'); window.location.href = 'index.html'; return; }
+
+  const user = auth.model;
+  const navName = document.getElementById('navName');
+  const navAvatar = document.getElementById('navAvatar');
+  if (navName) navName.textContent = (user.name?.name || user.name || 'User').split(' ')[0];
+  if (navAvatar) navAvatar.textContent = (user.name?.name || user.name || 'U').charAt(0).toUpperCase();
+
+  const navProfile = document.getElementById('navProfile');
+  const dropdown = document.getElementById('profileDropdown');
+  if (navProfile && dropdown) {
+    navProfile.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('show'); });
+    document.addEventListener('click', () => dropdown.classList.remove('show'));
+  }
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.onclick = () => {
+    if (connected && pb) pb.authStore.clear();
+    localStorage.removeItem('uzima_session');
+    window.location.href = 'index.html';
+  };
+
+  renderGrades();
+  document.getElementById('downloadTranscript').onclick = downloadTranscript;
+  
+  // Initialize Notifications
+  initNotifications();
+});

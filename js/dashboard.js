@@ -1,7 +1,22 @@
-// js/dashboard.js - Complete Working Version
+// js/dashboard.js - Complete Fixed Version
+import { pb, connected } from './core/pocketbase.js';
 import { toast } from './ui/toasts.js';
+import { initNotifications } from './notifications.js';
 
 console.log('📦 [Dashboard.js] Module loaded');
+
+// 🔒 HIDE ADMIN LINK FOR NON-ADMINS
+const sessionRaw = localStorage.getItem('uzima_session');
+if (sessionRaw) {
+    try {
+        const auth = JSON.parse(sessionRaw);
+        // If role is NOT admin, hide the Admin sidebar link
+        if (auth.model?.role !== 'admin') {
+            const adminLink = document.querySelector('a[href="admin.html"]');
+            if (adminLink) adminLink.style.display = 'none';
+        }
+    } catch (e) {}
+}
 
 // ─── SESSION CHECK ───
 function checkSession() {
@@ -10,7 +25,7 @@ function checkSession() {
     if (!raw) throw new Error('No session');
     
     const auth = JSON.parse(raw);
-    if (!auth.model?.name) throw new Error('Invalid session');
+    if (!auth.model) throw new Error('Invalid session');
     if (Date.now() > auth.expires) throw new Error('Expired');
     
     return auth.model;
@@ -24,32 +39,44 @@ function checkSession() {
 
 // ─── UPDATE UI WITH USER DATA ───
 function updateUI(user) {
-  // Welcome message
+  let displayName = "Student";
+  let displaySid = "N/A";
+  let displayRole = "STUDENT";
+  let displayEmail = "N/A";
+
+  if (user.name && typeof user.name === 'object') {
+      displayName = user.name.name || "Student";
+      displaySid = user.name.sid || "N/A";
+      displayRole = (user.name.role || "student").toUpperCase();
+      displayEmail = user.name.email || "N/A";
+  } else if (user.name && typeof user.name === 'string') {
+      displayName = user.name;
+      displaySid = user.sid || "N/A";
+      displayRole = (user.role || "student").toUpperCase();
+      displayEmail = user.email || "N/A";
+  }
+
+  // 1. Welcome & Nav
   const welcome = document.getElementById('welcomeMsg');
-  if (welcome) welcome.textContent = `Good morning, ${user.name}`;
+  if (welcome) welcome.textContent = `Welcome back, ${displayName}`;
   
-  // Navigation profile
   const navName = document.getElementById('navName');
-  if (navName) navName.textContent = user.name.split(' ')[0];
+  if (navName) navName.textContent = displayName.split(' ')[0];
   
-  // Avatar initial
   const avatar = document.getElementById('navAvatar');
-  if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+  if (avatar) avatar.textContent = displayName.charAt(0).toUpperCase();
   
-  // Stats (demo data)
-  const statCredits = document.getElementById('statCredits');
-  if (statCredits) statCredits.textContent = '42';
+  // 2. Profile Card (Live Data)
+  const profileSid = document.getElementById('profileSid');
+  if (profileSid) profileSid.textContent = displaySid;
   
-  const statGPA = document.getElementById('statGPA');
-  if (statGPA) statGPA.textContent = '3.85';
+  const profileRole = document.getElementById('profileRole');
+  if (profileRole) profileRole.textContent = displayRole;
   
-  const statPending = document.getElementById('statPending');
-  if (statPending) statPending.textContent = '3';
+  const profileEmail = document.getElementById('profileEmail');
+  if (profileEmail) profileEmail.textContent = displayEmail;
   
-  const statAttendance = document.getElementById('statAttendance');
-  if (statAttendance) statAttendance.textContent = '94%';
-  
-  // Date
+  // 3. Date
   const welcomeDate = document.getElementById('welcomeDate');
   if (welcomeDate) {
     const now = new Date();
@@ -58,48 +85,69 @@ function updateUI(user) {
     });
   }
   
-  console.log('🎨 UI updated for', user.name);
+  console.log('🎨 UI updated for', displayName, '| SID:', displaySid);
 }
 
-// ─── SETUP LOGOUT BUTTON ───
+// ─── LOGOUT ───
 function setupLogout() {
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
     logoutBtn.onclick = (e) => {
       e.preventDefault();
+      if (connected && pb) pb.authStore.clear();
       localStorage.removeItem('uzima_session');
       toast.show('Logged out successfully', 's');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 400);
+      setTimeout(() => { window.location.href = 'index.html'; }, 400);
     };
-    console.log('🔌 Logout handler attached');
-  } else {
-    console.warn('⚠️ logoutBtn not found in DOM');
   }
 }
 
-// ─── SETUP PROFILE DROPDOWN ───
+// ─── DROPDOWN ───
 function setupProfileDropdown() {
   const navProfile = document.getElementById('navProfile');
   const dropdown = document.getElementById('profileDropdown');
-  
-  if (navProfile && dropdown) {
-    navProfile.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle('show');
-    });
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', () => {
+  if (!navProfile || !dropdown) return;
+
+  navProfile.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!navProfile.contains(e.target) && !dropdown.contains(e.target)) {
       dropdown.classList.remove('show');
-    });
-  }
+    }
+  });
 }
 
-// ─── LOAD DASHBOARD CONTENT (Demo) ───
-function loadDashboardContent() {
-  // Quick actions
+// ─── TIMETABLE ───
+function setupTimetable() {
+  const ttTabs = document.getElementById('ttTabs');
+  const ttBody = document.getElementById('ttBody');
+  if (!ttTabs || !ttBody) return;
+
+  const tabs = ttTabs.querySelectorAll('.tt-tab');
+  const schedules = {
+    mon: '<div class="schedule-item" style="padding: 12px 0;"><strong style="color: var(--accent);">8:00 AM - 10:00 AM</strong><br>CS101 - Data Structures<br><span class="muted">Room 301</span></div>',
+    tue: '<div class="schedule-item" style="padding: 12px 0;"><strong style="color: var(--accent);">10:00 AM - 12:00 PM</strong><br>MATH201 - Calculus II<br><span class="muted">Room 205</span></div>',
+    wed: '<div class="schedule-item" style="padding: 12px 0;"><strong style="color: var(--accent);">2:00 PM - 4:00 PM</strong><br>ENG102 - Technical Writing<br><span class="muted">Room 102</span></div>',
+    thu: '<div class="schedule-item" style="padding: 12px 0;"><strong style="color: var(--accent);">8:00 AM - 10:00 AM</strong><br>CS101 - Data Structures<br><span class="muted">Room 301</span></div>',
+    fri: '<p class="muted" style="padding: 12px 0;">No classes scheduled</p>'
+  };
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      ttBody.innerHTML = schedules[tab.dataset.day] || '<p class="muted">No schedule</p>';
+    });
+  });
+  
+  if (tabs.length > 0) tabs[0].click();
+}
+
+// ─── QUICK ACTIONS & NOTIFS ───
+function loadExtras() {
   const actionsGrid = document.getElementById('actionsGrid');
   if (actionsGrid) {
     actionsGrid.innerHTML = `
@@ -109,60 +157,40 @@ function loadDashboardContent() {
       <button class="action-card"><i class="fas fa-bell"></i><span>Notifications</span></button>
     `;
   }
-  
-  // Timetable tabs
-  const ttTabs = document.getElementById('ttTabs');
-  const ttBody = document.getElementById('ttBody');
-  if (ttTabs && ttBody) {
-    ttTabs.querySelectorAll('.tt-tab').forEach(tab => {
-      tab.onclick = () => {
-        ttTabs.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        ttBody.innerHTML = `<p class="muted">No classes scheduled for ${tab.dataset.day.toUpperCase()}</p>`;
-      };
-    });
-    // Trigger first tab
-    ttTabs.querySelector('.tt-tab')?.click();
-  }
-  
-  // Notifications
+
   const notifList = document.getElementById('notifList');
-  const notifBadge = document.getElementById('notifBadge');
-  if (notifList && notifBadge) {
-    const notifs = [
-      { title: 'Assignment Due', desc: 'CS101: Data Structures - Tomorrow', time: '2h ago' },
-      { title: 'Grade Posted', desc: 'MATH201: Calculus II - B+', time: '1d ago' }
-    ];
-    notifList.innerHTML = notifs.map(n => `
-      <div class="notif-item">
-        <div class="notif-content">
-          <strong>${n.title}</strong>
-          <p class="muted">${n.desc}</p>
-          <small class="muted">${n.time}</small>
-        </div>
-      </div>
-    `).join('');
-    notifBadge.textContent = notifs.length;
+  if (notifList) {
+    notifList.innerHTML = `
+      <div class="notif-item"><strong style="color:var(--t1)">Assignment Due</strong><p class="muted">CS101: Data Structures - Tomorrow</p></div>
+      <div class="notif-item"><strong style="color:var(--t1)">Grade Posted</strong><p class="muted">MATH201: Calculus II - B+</p></div>
+    `;
   }
-  
-  console.log('📊 Dashboard content loaded');
 }
 
-// ─── INIT ON DOM READY ───
+// ─── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
+  // ROLE GUARD - Redirect parents to parent.html
+  const raw = localStorage.getItem('uzima_session');
+  if (raw) {
+    try {
+      const auth = JSON.parse(raw);
+      const role = auth.model?.role?.toLowerCase() || 'student';
+      if (role === 'parent') {
+        window.location.href = 'parent.html';
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+  }
   console.log('🔌 Dashboard initializing...');
-  
   const user = checkSession();
-  if (!user) return; // Redirect already handled
+  if (!user) return;
   
   updateUI(user);
   setupLogout();
   setupProfileDropdown();
-  loadDashboardContent();
-  
-  // Hide loader if exists
-  const loader = document.getElementById('globalLoader');
-  if (loader) loader.classList.add('hidden');
-  
+  setupTimetable();
+  loadExtras();
+  initNotifications();
   console.log('🚀 Dashboard ready');
 });
